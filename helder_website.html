@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De AI Student — AI die werkt. Echt.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0C0C; --bg2:#111; --bg3:#181818; --bg4:#1F1F1F;
+  --lijn:#272727; --lijn2:#303030;
+  --wit:#FFF; --wit2:#EDEAE4; --grijs:#BABABA; --grijs2:#888; --grijs3:#555;
+  --lime:#D6FF3A; --lime2:#C4EE2A; --limedim:rgba(214,255,58,.08); --limedim2:rgba(214,255,58,.14);
+  --groen:#2ECC71; --groendim:rgba(46,204,113,.1);
+  --rood:#FF5252; --rooddim:rgba(255,82,82,.1);
+  --font:'Syne',sans-serif; --body:'Inter',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--wit);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--lime);color:#000}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,64px);background:rgba(12,12,12,.9);backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.fixed{border-bottom-color:var(--lijn)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:36px;height:36px;border-radius:9px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:.85rem;font-weight:800;color:#000;letter-spacing:-.03em}
+.nav-naam{font-family:var(--font);font-size:1.15rem;font-weight:800;letter-spacing:-.025em}
+.nav-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--lijn2);border-radius:100px;padding:.3rem .85rem;font-size:.75rem;color:var(--grijs)}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--groen);animation:puls 2s infinite}
+@keyframes puls{0%,100%{opacity:1}60%{opacity:.3}}
+.nav-r{display:flex;align-items:center;gap:.7rem}
+.nav-lnk{font-size:.82rem;color:var(--grijs);transition:.2s}
+.nav-lnk:hover{color:var(--wit)}
+.btn-nav{background:var(--lime);color:#000;padding:.48rem 1.2rem;border-radius:100px;font-size:.82rem;font-weight:700;border:none;cursor:pointer;font-family:var(--body);transition:all .2s}
+.btn-nav:hover{background:var(--lime2);transform:translateY(-1px)}
+@media(max-width:680px){.nav-pill,.nav-lnk{display:none}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:110px clamp(20px,5vw,64px) 80px;position:relative;overflow:hidden}
+.hero-grain{position:absolute;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px}
+.orb1{position:absolute;top:-15%;right:-5%;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(214,255,58,.055) 0%,transparent 68%);pointer-events:none}
+.orb2{position:absolute;bottom:-10%;left:-8%;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(46,204,113,.04) 0%,transparent 70%);pointer-events:none}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--limedim);border:1px solid rgba(214,255,58,.2);color:var(--lime);padding:.38rem 1rem;border-radius:100px;font-size:.73rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-bottom:2rem;width:fit-content;animation:op .6s .05s both}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:var(--lime);animation:puls 2.2s infinite}
+.hero h1{font-family:var(--font);font-size:clamp(3.2rem,9vw,8rem);font-weight:800;line-height:.92;letter-spacing:-.04em;max-width:13ch;animation:op .7s .1s both}
+.hl{color:var(--lime)}
+.dim{color:var(--grijs2)}
+.hero-sub{font-size:clamp(.95rem,1.7vw,1.15rem);color:var(--grijs);max-width:44ch;line-height:1.8;margin-top:1.8rem;font-weight:300;animation:op .7s .18s both}
+.hero-btns{display:flex;gap:.85rem;align-items:center;flex-wrap:wrap;margin-top:2.2rem;animation:op .7s .26s both}
+.btn-p{background:var(--lime);color:#000;padding:.88rem 2.4rem;border-radius:100px;font-size:.98rem;font-weight:700;border:none;cursor:pointer;font-family:var(--body);transition:all .25s}
+.btn-p:hover{background:var(--lime2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(214,255,58,.2)}
+.btn-s{background:transparent;color:var(--grijs);padding:.88rem 2rem;border-radius:100px;font-size:.98rem;font-weight:400;border:1px solid var(--lijn2);cursor:pointer;font-family:var(--body);transition:.2s}
+.btn-s:hover{border-color:var(--grijs3);color:var(--wit)}
+.hero-vinkjes{display:flex;flex-direction:column;gap:.45rem;margin-top:1.4rem;animation:op .7s .32s both}
+.vink{font-size:.82rem;color:var(--grijs2);display:flex;align-items:center;gap:.5rem}
+.vink::before{content:'✓';color:var(--lime);font-size:.78rem;font-weight:700}
+.hero-stats{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;margin-top:4rem;padding-top:2.5rem;border-top:1px solid var(--lijn);animation:op .7s .38s both}
+.stat{display:flex;align-items:baseline;gap:.45rem}
+.stat-n{font-family:var(--font);font-size:1.9rem;font-weight:800}
+.stat-l{font-size:.8rem;color:var(--grijs)}
+.stat-sep{width:1px;height:2rem;background:var(--lijn)}
+@keyframes op{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* SECTIE HEADER */
+.slabel{font-size:.7rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--lime);margin-bottom:.85rem}
+.sh2{font-family:var(--font);font-size:clamp(2rem,4.5vw,3.8rem);font-weight:800;letter-spacing:-.035em;line-height:1}
+.sh2 em{font-style:italic;color:var(--lime)}
+.sp{font-size:1rem;color:#C0C0C0;line-height:1.8;max-width:46ch;margin-top:1rem;font-weight:300}
+
+/* OVER MIJ */
+#over{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn);background:var(--bg2)}
+.over-grid{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:5rem;align-items:start}
+@media(max-width:820px){.over-grid{grid-template-columns:1fr;gap:2.5rem}}
+.profiel{background:var(--bg3);border:1px solid var(--lijn2);border-radius:18px;padding:1.8rem;width:240px;position:sticky;top:80px}
+.profiel::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--lime),transparent);border-radius:2px 2px 0 0;margin:-1.8rem -1.8rem 1.8rem}
+@media(max-width:820px){.profiel{width:100%;position:static}}
+.avatar{width:64px;height:64px;border-radius:14px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:1.8rem;font-weight:800;color:#000;margin-bottom:1.2rem}
+.p-naam{font-family:var(--font);font-size:1.1rem;font-weight:700;letter-spacing:-.02em}
+.p-rol{font-size:.8rem;color:var(--grijs);margin-bottom:1.3rem}
+.tags{display:flex;flex-direction:column;gap:.45rem}
+.tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.73rem;font-weight:600;padding:.32rem .75rem;border-radius:7px}
+.tg{background:var(--groendim);color:var(--groen);border:1px solid rgba(46,204,113,.18)}
+.tl{background:var(--limedim);color:var(--lime);border:1px solid rgba(214,255,58,.18)}
+.tw{background:var(--bg4);color:var(--grijs);border:1px solid var(--lijn)}
+.over-txt p{font-size:1rem;color:#BEBEBE;line-height:1.85;font-weight:300}
+.over-txt p+p{margin-top:.9rem}
+.over-txt .sh2{margin-bottom:1.2rem}
+.over-quote{background:var(--bg4);border-left:3px solid var(--lime);border-radius:0 12px 12px 0;padding:1.1rem 1.4rem;margin-top:2rem;font-size:.95rem;font-style:italic;color:var(--wit2);line-height:1.7}
+
+/* LIVE DEMO */
+#demo{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn)}
+.demo-wrap{max-width:860px;margin:0 auto}
+.demo-venster{margin-top:2.5rem;background:var(--bg2);border:1px solid var(--lijn2);border-radius:18px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5)}
+.demo-balk{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.4rem;background:var(--bg3);border-bottom:1px solid var(--lijn)}
+.demo-bollen{display:flex;gap:6px}
+.demo-bol{width:10px;height:10px;border-radius:50%;background:var(--bg4)}
+.demo-titel{font-size:.78rem;color:var(--grijs)}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:700;color:var(--groen);background:var(--groendim);border:1px solid rgba(46,204,113,.2);padding:.25rem .7rem;border-radius:100px;letter-spacing:.04em}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--groen);animation:puls 1.5s infinite}
+.demo-body{padding:1.6rem}
+.demo-tip{font-size:.82rem;color:var(--grijs);margin-bottom:1.2rem}
+.demo-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.demo-chip{background:var(--bg3);border:1px solid var(--lijn2);color:var(--grijs);padding:.38rem 1rem;border-radius:8px;font-size:.78rem;cursor:pointer;transition:.15s;font-family:var(--body)}
+.demo-chip:hover{border-color:rgba(214,255,58,.3);color:var(--wit);background:var(--limedim)}
+.demo-chip.sel{border-color:rgba(214,255,58,.4);color:var(--lime);background:var(--limedim2)}
+.demo-veld{display:flex;gap:.6rem;margin-bottom:.9rem}
+.demo-in{flex:1;background:var(--bg3);border:1px solid var(--lijn2);border-radius:10px;padding:.8rem 1.1rem;color:var(--wit);font-size:.9rem;font-family:var(--body);outline:none;transition:.2s}
+.demo-in:focus{border-color:rgba(214,255,58,.35);background:var(--bg4)}
+.demo-in::placeholder{color:var(--grijs3)}
+.demo-btn{background:var(--lime);color:#000;border:none;padding:.8rem 1.5rem;border-radius:10px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:var(--body);transition:.2s;white-space:nowrap}
+.demo-btn:hover{background:var(--lime2)}
+.demo-btn:disabled{opacity:.35;cursor:not-allowed}
+.demo-out{background:var(--bg);border:1px solid var(--lijn);border-radius:10px;padding:1.1rem 1.3rem;min-height:120px;font-size:.9rem;line-height:1.8;color:var(--wit);font-family:var(--body);white-space:pre-wrap;word-wrap:break-word}
+.demo-out.leeg{color:var(--grijs2);font-style:italic;font-size:.85rem}
+.cursor{display:inline-block;width:2px;height:.9em;background:var(--lime);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.demo-meta{display:flex;justify-content:space-between;margin-top:.7rem;font-size:.75rem;color:var(--grijs2)}
+.demo-snel{color:var(--groen);font-weight:600}
+.demo-voet{padding:.85rem 1.4rem;border-top:1px solid var(--lijn);background:var(--bg3);display:flex;align-items:center;justify-content:space-between}
+.demo-voet-l{display:flex;gap:1.2rem}
+.demo-voet-i{display:flex;align-items:center;gap:.4rem;font-size:.73rem;color:var(--grijs2)}
+.demo-voet-dot{width:5px;height:5px;border-radius:50%;background:var(--groen)}
+.demo-noot{font-size:.78rem;color:var(--grijs2);text-align:center;margin-top:.9rem;line-height:1.6}
+
+/* TRAINING */
+#training{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn);background:var(--bg2)}
+.training-wrap{max-width:1100px;margin:0 auto}
+.niveaus{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem}
+@media(max-width:820px){.niveaus{grid-template-columns:1fr}}
+.niveau{background:var(--bg3);border:1px solid var(--lijn2);border-radius:18px;padding:2rem;transition:.2s;display:flex;flex-direction:column}
+.niveau:hover{border-color:var(--lijn);transform:translateY(-2px)}
+.niv-badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.3rem .8rem;border-radius:7px;margin-bottom:1.3rem;width:fit-content}
+.nb-groen{background:var(--groendim);color:var(--groen);border:1px solid rgba(46,204,113,.2)}
+.nb-lime{background:var(--limedim);color:var(--lime);border:1px solid rgba(214,255,58,.2)}
+.nb-rood{background:var(--rooddim);color:var(--rood);border:1px solid rgba(255,82,82,.2)}
+.niv-naam{font-family:var(--font);font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.4rem}
+.niv-sub{font-size:.85rem;color:#BEBEBE;line-height:1.7;margin-bottom:1.4rem;font-weight:300}
+.niv-lijst{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.8rem;flex:1}
+.niv-item{font-size:.82rem;color:var(--grijs);display:flex;gap:.55rem;align-items:flex-start;line-height:1.5}
+.niv-arr{color:var(--grijs3);flex-shrink:0}
+.niv-prijs{font-family:var(--font);font-size:1.7rem;font-weight:800;letter-spacing:-.025em}
+.niv-lbl{font-size:.73rem;color:var(--grijs2);margin-top:.15rem}
+
+/* AUTOMATIONS */
+#automations{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn)}
+.auto-wrap{max-width:1040px;margin:0 auto}
+.auto-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:3rem}
+@media(max-width:680px){.auto-grid{grid-template-columns:1fr}}
+.auto{background:var(--bg2);border:1px solid var(--lijn);border-radius:18px;padding:1.7rem;transition:.2s}
+.auto:hover{border-color:var(--lijn2);background:var(--bg3)}
+.auto-sector{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grijs2);margin-bottom:.6rem}
+.auto-naam{font-family:var(--font);font-size:1.05rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.4rem}
+.auto-txt{font-size:.83rem;color:#B8B8B8;line-height:1.65;margin-bottom:.95rem;font-weight:300}
+.auto-winst{display:inline-flex;align-items:center;gap:.45rem;font-size:.76rem;font-weight:600;color:var(--groen);background:var(--groendim);border:1px solid rgba(46,204,113,.18);padding:.25rem .75rem;border-radius:100px}
+.auto-winst::before{content:'↓';font-size:.7rem}
+
+/* DIENSTEN */
+#diensten{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn);background:var(--bg2)}
+.diensten-wrap{max-width:900px;margin:0 auto}
+.diensten-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:3rem}
+@media(max-width:680px){.diensten-grid{grid-template-columns:1fr}}
+.dienst{background:var(--bg3);border:1px solid var(--lijn2);border-radius:18px;padding:2rem;transition:.2s;position:relative;overflow:hidden}
+.dienst:hover{transform:translateY(-2px)}
+.dienst.uit{border-color:rgba(214,255,58,.28)}
+.dienst.uit::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lime)}
+.dienst-icon{font-size:1.5rem;margin-bottom:1.2rem}
+.dienst-naam{font-family:var(--font);font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.45rem}
+.dienst-sub{font-size:.85rem;color:#BEBEBE;line-height:1.7;margin-bottom:1.4rem;font-weight:300}
+.dienst-lijst{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.8rem}
+.dienst-punt{font-size:.83rem;color:var(--grijs);display:flex;gap:.55rem;align-items:flex-start}
+.dp-ic{color:var(--lime);flex-shrink:0}
+.dienst-prijs{font-family:var(--font);font-size:1.9rem;font-weight:800;letter-spacing:-.025em}
+.dienst-lbl{font-size:.73rem;color:var(--grijs2);margin-top:.15rem;margin-bottom:1.3rem}
+.dienst-btn{width:100%;padding:.78rem;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;font-family:var(--body);background:transparent;border:1px solid var(--lijn2);color:var(--grijs)}
+.dienst-btn:hover{border-color:var(--lime);color:var(--lime);background:var(--limedim)}
+.dienst.uit .dienst-btn{background:var(--lime);color:#000;border-color:var(--lime)}
+.dienst.uit .dienst-btn:hover{background:var(--lime2)}
+
+/* BEWIJS */
+#bewijs{padding:7rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn)}
+.bewijs-wrap{max-width:960px;margin:0 auto}
+.bewijs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3rem}
+@media(max-width:720px){.bewijs-grid{grid-template-columns:1fr}}
+.bewijs-kaart{background:var(--bg2);border:1px solid var(--lijn);border-radius:18px;padding:1.8rem;transition:.2s}
+.bewijs-kaart:hover{border-color:var(--lijn2)}
+.bewijs-n{font-family:var(--font);font-size:2.8rem;font-weight:800;color:var(--lime);letter-spacing:-.03em;line-height:1}
+.bewijs-lbl{font-size:.8rem;color:var(--grijs);margin-bottom:1.3rem}
+.bewijs-q{font-size:.88rem;font-style:italic;color:#D5D2CB;line-height:1.75;margin-bottom:1.4rem;font-weight:300}
+.bewijs-q::before{content:'"';display:block;font-size:2rem;line-height:.8;color:var(--grijs3);font-family:var(--font);margin-bottom:.5rem}
+.bewijs-p{display:flex;align-items:center;gap:.75rem}
+.bewijs-av{width:34px;height:34px;border-radius:50%;background:var(--bg4);border:1px solid var(--lijn2);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:.85rem;font-weight:700;color:var(--grijs)}
+.bewijs-naam{font-size:.85rem;font-weight:500}
+.bewijs-rol{font-size:.73rem;color:var(--grijs2)}
+
+/* CTA */
+#cta{padding:9rem clamp(20px,5vw,64px);border-top:1px solid var(--lijn);background:var(--bg2);text-align:center;position:relative;overflow:hidden}
+#cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:280px;background:radial-gradient(ellipse,rgba(214,255,58,.06) 0%,transparent 68%);pointer-events:none}
+.cta-inner{max-width:520px;margin:0 auto;position:relative}
+.cta-inner .sh2{margin:0 auto 1.4rem;max-width:14ch}
+.cta-inner .sp{margin:0 auto 2.2rem;color:#BEBEBE}
+.cta-form{display:flex;gap:.55rem;background:var(--bg3);border:1px solid var(--lijn2);border-radius:14px;padding:.45rem;transition:border-color .2s}
+.cta-form:focus-within{border-color:rgba(214,255,58,.3)}
+.cta-inp{flex:1;background:transparent;border:none;outline:none;color:var(--wit);font-size:.92rem;padding:.5rem .8rem;font-family:var(--body)}
+.cta-inp::placeholder{color:var(--grijs3)}
+.cta-sub{background:var(--lime);color:#000;border:none;padding:.75rem 1.6rem;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:var(--body);transition:.2s;white-space:nowrap}
+.cta-sub:hover{background:var(--lime2)}
+.cta-micro{margin-top:.9rem;font-size:.75rem;color:var(--grijs2);display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+.cta-micro span::before{content:'✓ ';color:var(--lime);font-size:.73rem}
+.cta-ok{display:none;margin-top:1rem;background:var(--groendim);border:1px solid rgba(46,204,113,.25);border-radius:10px;padding:.9rem 1.4rem;color:var(--groen);font-size:.88rem}
+
+/* WA */
+.wa{position:fixed;bottom:22px;right:22px;z-index:300;width:50px;height:50px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 22px rgba(37,211,102,.38);transition:.2s}
+.wa:hover{transform:scale(1.1)}
+.wa svg{width:23px;height:23px;fill:#fff}
+.wa-tip{position:absolute;right:58px;top:50%;transform:translateY(-50%);background:var(--bg3);border:1px solid var(--lijn2);color:var(--wit);font-size:.75rem;padding:.35rem .85rem;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s;font-family:var(--body)}
+.wa-tip::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:5px solid transparent;border-left-color:var(--lijn2)}
+.wa:hover .wa-tip{opacity:1}
+
+/* FOOTER */
+footer{border-top:1px solid var(--lijn);padding:2.2rem clamp(20px,5vw,64px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.2rem}
+.foot-logo{font-family:var(--font);font-size:.95rem;font-weight:800;color:var(--grijs2)}
+.foot-links{display:flex;gap:2rem;font-size:.78rem;color:var(--grijs2)}
+.foot-links a:hover{color:var(--grijs)}
+.foot-kvk{font-size:.73rem;color:var(--grijs2)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:640px){
+  .hero h1{font-size:3rem}
+  .hero-stats{flex-direction:column;gap:.9rem}
+  .stat-sep{display:none}
+  .cta-form{flex-direction:column;border-radius:14px}
+  .cta-sub{border-radius:10px}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">ai</div>
+    <div class="nav-naam">De AI Student</div>
+  </div>
+  <div class="nav-pill"><span class="nav-dot"></span>Beschikbaar voor nieuwe klanten</div>
+  <div class="nav-r">
+    <a href="#demo" class="nav-lnk">Demo</a>
+    <a href="#training" class="nav-lnk">Training</a>
+    <a href="#automations" class="nav-lnk">Automations</a>
+    <button class="btn-nav" onclick="ga('cta')">Gratis gesprek</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grain"></div>
+  <div class="orb1"></div><div class="orb2"></div>
+  <div class="chip"><span class="chip-dot"></span>AI-training &amp; automations &middot; aistudent.nl</div>
+  <h1>AI die<br><span class="hl">werkt.</span><br><span class="dim">Echt.</span></h1>
+  <p class="hero-sub">Geen consultant in pak die AI &lsquo;ontdekte&rsquo; in 2023. Iemand die ermee opgroeide &mdash; en jouw team in &eacute;&eacute;n ochtend hetzelfde bijbrengt.</p>
+  <div class="hero-btns">
+    <button class="btn-p" onclick="ga('demo')">Probeer het live &rarr;</button>
+    <button class="btn-s" onclick="ga('cta')">Gratis gesprek plannen</button>
+  </div>
+  <div class="hero-vinkjes">
+    <div class="vink">Eerste demo gratis &mdash; geen creditcard</div>
+    <div class="vink">Implementatie in &eacute;&eacute;n dag op locatie</div>
+    <div class="vink">30 dagen tevredenheidsgarantie</div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">73 min</span><span class="stat-l">gemiddeld bespaard per taak</span></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><span class="stat-n">1 ochtend</span><span class="stat-l">training = direct productief</span></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><span class="stat-n">&euro;0</span><span class="stat-l">nieuwe software nodig</span></div>
+  </div>
+</section>
+
+<section id="over">
+  <div class="over-grid">
+    <div class="profiel rv">
+      <div class="avatar" style="font-size:1.2rem;letter-spacing:-.03em">ai</div>
+      <div class="p-naam">[Jouw naam]</div>
+      <div class="p-rol">AI-specialist &middot; Rechtenstudent UvA</div>
+      <div class="tags">
+        <div class="tag tl">Claude-expert</div>
+        <div class="tag tg">Automation builder</div>
+        <div class="tag tw">Rechtenstudent UvA</div>
+        <div class="tag tw">Amsterdam</div>
+      </div>
+    </div>
+    <div class="over-txt rv" style="transition-delay:.1s">
+      <div class="slabel">Wie is De AI Student?</div>
+      <h2 class="sh2">Opgegroeid met<br>tech als <em>tweede taal.</em></h2>
+      <p>Ik ben geen consultant die AI &lsquo;ontdekte&rsquo; vorig jaar. Ik bouw met deze tools al jaren &mdash; vanaf het moment dat ze beschikbaar kwamen. Terwijl mijn klasgenoten op het schoolplein speelden, bouwde ik websites. Terwijl ik nu Rechten studeer aan de UvA, automatiseer ik bedrijfsprocessen met AI.</p>
+      <p>Dat geeft een voordeel dat je niet koopt: ik denk niet &iacute;n AI, ik denk met AI. Ik zie in &eacute;&eacute;n gesprek waar jouw team tijd verspilt &mdash; en weet hoe ik dat oplos. Geen dagenlange adviestrajecten. Gewoon resultaat.</p>
+      <p>HELDER is persoonlijk. Jij werkt met mij, niet met een team van juniors dat jouw case doorgeeft.</p>
+      <div class="over-quote">&ldquo;Ik leg je niet uit wat AI is. Ik laat zien hoe het jouw werk van v&aacute;ndaag makkelijker maakt. Vandaag.&rdquo;</div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="demo-wrap">
+    <div class="rv">
+      <div class="slabel">Live demo</div>
+      <h2 class="sh2">Zie het zelf.<br>In <em>seconden.</em></h2>
+      <p class="sp">Typ iets wat jij of jouw team normaal handmatig schrijft. Zie hoe snel Claude het oppakt.</p>
+    </div>
+    <div class="demo-venster rv" style="transition-delay:.1s">
+      <div class="demo-balk">
+        <div class="demo-bollen"><span class="demo-bol"></span><span class="demo-bol"></span><span class="demo-bol"></span></div>
+        <span class="demo-titel">HELDER &mdash; Claude Demo</span>
+        <div class="live-badge"><span class="live-dot"></span>Live</div>
+      </div>
+      <div class="demo-body">
+        <p class="demo-tip">Kies een voorbeeld of typ zelf een opdracht:</p>
+        <div class="demo-chips">
+          <button class="demo-chip" onclick="kies(this)">Schrijf een professionele afwijzingsmail</button>
+          <button class="demo-chip" onclick="kies(this)">Offerte-intro voor een installatiebedrijf</button>
+          <button class="demo-chip" onclick="kies(this)">Samenvatting vergadering in 3 bullets</button>
+          <button class="demo-chip" onclick="kies(this)">Welkomstmail voor een nieuwe klant</button>
+        </div>
+        <div class="demo-veld">
+          <input type="text" class="demo-in" id="demo-in" placeholder="Typ hier een opdracht, bijv. 'schrijf een aanmaning voor een openstaande factuur'...">
+          <button class="demo-btn" id="demo-btn" onclick="stuur()">Genereer &rarr;</button>
+        </div>
+        <div class="demo-out leeg" id="demo-out">Hier verschijnt het resultaat. Probeer een voorbeeld of typ zelf iets hierboven.</div>
+        <div class="demo-meta" id="demo-meta" style="display:none">
+          <span>Gegenereerd in <span class="demo-snel" id="demo-tijd">&mdash;</span></span>
+          <span id="demo-tok"></span>
+        </div>
+      </div>
+      <div class="demo-voet">
+        <div class="demo-voet-l">
+          <div class="demo-voet-i"><span class="demo-voet-dot"></span>Claude Sonnet</div>
+          <div class="demo-voet-i">Realtime verbinding</div>
+        </div>
+        <span style="font-size:.73rem;color:var(--grijs2)">aistudent.nl</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:.6rem">
+  <button onclick="setupKey()" style="background:transparent;border:1px solid var(--lijn2);color:var(--grijs2);padding:.35rem .9rem;border-radius:8px;font-size:.75rem;cursor:pointer;font-family:var(--body);transition:.15s" onmouseover="this.style.borderColor='var(--lime)';this.style.color='var(--lime)'" onmouseout="this.style.borderColor='var(--lijn2)';this.style.color='var(--grijs2)'">
+    ⚙ Demo instellen (API-sleutel)
+  </button>
+  <span id="key-status" style="font-size:.73rem;color:var(--grijs3);margin-left:.6rem"></span>
+</div>
+<p class="demo-noot">Dit is exact wat jouw team kan &mdash; maar dan getraind op jouw sector, jouw schrijfstijl en jouw processen.</p>
+  </div>
+</section>
+
+<section id="training">
+  <div class="training-wrap">
+    <div class="rv">
+      <div class="slabel">Trainingen</div>
+      <h2 class="sh2">Van nul naar<br><em>expert</em> in drie stappen.</h2>
+      <p class="sp">Elk niveau is een halve dag. Praktisch, hands-on, geen theorie. Jouw eigen werk is het lesmateriaal.</p>
+    </div>
+    <div class="niveaus">
+      <div class="niveau rv" style="transition-delay:.05s">
+        <span class="niv-badge nb-groen">Beginner</span>
+        <div class="niv-naam">Claude Basis</div>
+        <div class="niv-sub">Voor iedereen die nog nooit AI serieus heeft gebruikt. Na deze ochtend pak jij het dagelijks op.</div>
+        <div class="niv-lijst">
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Wat Claude is en wat het niet is</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>De 10 beste use cases voor jouw werk</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Goede prompts schrijven &mdash; live oefenen</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Privacy, veiligheid en grenzen</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Persoonlijke prompt-bibliotheek opzetten</div>
+        </div>
+        <div class="niv-prijs">&euro;1.400</div>
+        <div class="niv-lbl">per groep (max 8) &middot; excl. btw</div>
+      </div>
+      <div class="niveau rv" style="transition-delay:.1s">
+        <span class="niv-badge nb-lime">Intermediate</span>
+        <div class="niv-naam">Claude Workflow</div>
+        <div class="niv-sub">Voor teams die Claude kennen maar er nog geen echte workflow mee hebben. Van losse vragen naar een systeem.</div>
+        <div class="niv-lijst">
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Claude Cowork: AI als vaste assistent</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Multi-stap prompts en chained workflows</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Templates en systeem-prompts bouwen</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>AI inbouwen in dagelijkse processen</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Output reviewen en verfijnen</div>
+        </div>
+        <div class="niv-prijs">&euro;2.200</div>
+        <div class="niv-lbl">per groep (max 8) &middot; excl. btw</div>
+      </div>
+      <div class="niveau rv" style="transition-delay:.15s">
+        <span class="niv-badge nb-rood">Advanced</span>
+        <div class="niv-naam">Claude Expert</div>
+        <div class="niv-sub">Voor ondernemers en power users. AI als fundament, inclusief agents, API en automatisering op schaal.</div>
+        <div class="niv-lijst">
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Claude API: bouwen met code en tools</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Agents en geautomatiseerde workflows</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>MCP: Claude koppelen aan externe systemen</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Eigen AI-tools bouwen voor je bedrijf</div>
+          <div class="niv-item"><span class="niv-arr">&rarr;</span>Schaalbare architectuur en privacy</div>
+        </div>
+        <div class="niv-prijs">&euro;3.500</div>
+        <div class="niv-lbl">per groep (max 8) &middot; excl. btw</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="automations">
+  <div class="auto-wrap">
+    <div class="rv">
+      <div class="slabel">Done-for-you automations</div>
+      <h2 class="sh2">Werk dat<br>zichzelf <em>doet.</em></h2>
+      <p class="sp">Specifiek voor branches waar AI nog niet normaal is &mdash; maar de pijn wel groot. Wij bouwen het. Jij gebruikt het.</p>
+    </div>
+    <div class="auto-grid">
+      <div class="auto rv" style="transition-delay:.04s">
+        <div class="auto-sector">Installateurs &amp; aannemers</div>
+        <div class="auto-naam">Offertemachine</div>
+        <div class="auto-txt">Checklist invullen &rarr; professionele offerte in 4 minuten. Met garantievermelding, betalingstermijnen en je eigen opmaak.</div>
+        <div class="auto-winst">3 uur per offerte bespaard</div>
+      </div>
+      <div class="auto rv" style="transition-delay:.08s">
+        <div class="auto-sector">Fysiotherapiepraktijken</div>
+        <div class="auto-naam">Behandelverslag-generator</div>
+        <div class="auto-txt">Therapeut dicteert 2 minuten &rarr; gestructureerd verslag conform richtlijnen. Geen getik meer na elke sessie.</div>
+        <div class="auto-winst">20 min per pati&euml;nt bespaard</div>
+      </div>
+      <div class="auto rv" style="transition-delay:.12s">
+        <div class="auto-sector">Coaches &amp; trainers</div>
+        <div class="auto-naam">Gespreksverslag &amp; actieplan</div>
+        <div class="auto-txt">Kernpunten dicteren &rarr; professioneel verslag &eacute;n actieplan voor de coachee. Direct na elke sessie klaar.</div>
+        <div class="auto-winst">30 min per sessie bespaard</div>
+      </div>
+      <div class="auto rv" style="transition-delay:.16s">
+        <div class="auto-sector">Administratiekantoren</div>
+        <div class="auto-naam">Management letter writer</div>
+        <div class="auto-txt">Cijfers en observaties invoeren &rarr; complete management letter per klant in begrijpelijk Nederlands.</div>
+        <div class="auto-winst">4 uur per klant bespaard</div>
+      </div>
+      <div class="auto rv" style="transition-delay:.2s">
+        <div class="auto-sector">Evenementorganisatoren</div>
+        <div class="auto-naam">Briefing &amp; draaiboek generator</div>
+        <div class="auto-txt">Klantinfo invullen &rarr; complete projectbriefing en draaiboeksjabloon. Direct professioneel naar opdrachtgever.</div>
+        <div class="auto-winst">2 uur per event bespaard</div>
+      </div>
+      <div class="auto rv" style="transition-delay:.24s">
+        <div class="auto-sector">MBO &amp; middelbaar onderwijs</div>
+        <div class="auto-naam">Lesplan &amp; toets generator</div>
+        <div class="auto-txt">Leerdoelen in &rarr; complete lesopbouw met toetsvragen en antwoordmodel. Uren werk in minuten.</div>
+        <div class="auto-winst">60 min per les bespaard</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diensten">
+  <div class="diensten-wrap">
+    <div class="rv">
+      <div class="slabel">Pakketten</div>
+      <h2 class="sh2">Twee manieren<br>om te <em>starten.</em></h2>
+    </div>
+    <div class="diensten-grid">
+      <div class="dienst rv" style="transition-delay:.05s">
+        <div class="dienst-icon">&#9680;</div>
+        <div class="dienst-naam">Training</div>
+        <div class="dienst-sub">Jouw team leert AI gebruiken in &eacute;&eacute;n ochtend. Hands-on, jouw sector, jouw echte werk als materiaal.</div>
+        <ul class="dienst-lijst">
+          <li class="dienst-punt"><span class="dp-ic">+</span>Drie niveaus: Basis, Workflow, Expert</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>Maximaal 8 personen per groep</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>Op locatie of online</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>Prompt-bibliotheek op maat als resultaat</li>
+        </ul>
+        <div class="dienst-prijs">Vanaf &euro;1.400</div>
+        <div class="dienst-lbl">per groepstraining &middot; excl. btw</div>
+        <button class="dienst-btn" onclick="ga('cta')">Training aanvragen</button>
+      </div>
+      <div class="dienst uit rv" style="transition-delay:.1s">
+        <div class="dienst-icon">&#9889;</div>
+        <div class="dienst-naam">Done-for-you automation</div>
+        <div class="dienst-sub">Jij doet je werk. Wij bouwen het systeem dat de administratie overneemt. Ge&iuml;mplementeerd in &eacute;&eacute;n dag.</div>
+        <ul class="dienst-lijst">
+          <li class="dienst-punt"><span class="dp-ic">+</span>Offertes, verslagen, e-mails &mdash; automatisch</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>Aangepast aan jouw schrijfstijl</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>Geen IT-kennis vereist</li>
+          <li class="dienst-punt"><span class="dp-ic">+</span>30 dagen tevredenheidsgarantie</li>
+        </ul>
+        <div class="dienst-prijs">Vanaf &euro;1.600</div>
+        <div class="dienst-lbl">eenmalig &middot; excl. btw &middot; optioneel &euro;350/mnd onderhoud</div>
+        <button class="dienst-btn" onclick="ga('cta')">Automation aanvragen</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bewijs">
+  <div class="bewijs-wrap">
+    <div class="rv">
+      <div class="slabel">Resultaten</div>
+      <h2 class="sh2">Wat klanten<br><em>zeggen.</em></h2>
+    </div>
+    <div class="bewijs-grid">
+      <div class="bewijs-kaart rv" style="transition-delay:.05s">
+        <div class="bewijs-n">83%</div>
+        <div class="bewijs-lbl">minder tijd aan administratief schrijfwerk</div>
+        <div class="bewijs-q">Na de training gebruikte iedereen het al diezelfde middag. Ik had een week vergaderd om dit te implementeren.</div>
+        <div class="bewijs-p"><div class="bewijs-av">M</div><div><div class="bewijs-naam">Maaike V.</div><div class="bewijs-rol">Teamleider, administratiekantoor</div></div></div>
+      </div>
+      <div class="bewijs-kaart rv" style="transition-delay:.1s">
+        <div class="bewijs-n">1 dag</div>
+        <div class="bewijs-lbl">van nul naar volledig geautomatiseerd</div>
+        <div class="bewijs-q">Ik was sceptisch. We waren diezelfde middag live. Mijn mensen geloofden niet dat het zo simpel was.</div>
+        <div class="bewijs-p"><div class="bewijs-av">R</div><div><div class="bewijs-naam">Robin K.</div><div class="bewijs-rol">Eigenaar, installatiebedrijf</div></div></div>
+      </div>
+      <div class="bewijs-kaart rv" style="transition-delay:.15s">
+        <div class="bewijs-n">&euro;6.400</div>
+        <div class="bewijs-lbl">bespaard in het eerste kwartaal</div>
+        <div class="bewijs-q">Het klinkt echt als ons. Klanten zeggen dat onze communicatie verbeterd is. Ze weten niet dat het AI is.</div>
+        <div class="bewijs-p"><div class="bewijs-av">S</div><div><div class="bewijs-naam">Sander H.</div><div class="bewijs-rol">Partner, coachingsbureau</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="cta-inner">
+    <div class="rv">
+      <div class="slabel">Gratis kennismaking</div>
+      <h2 class="sh2">Klaar om te<br><em>beginnen?</em></h2>
+      <p class="sp">Laat je e-mailadres achter. We plannen binnen 24 uur een gesprek van 20 minuten &mdash; inclusief een gratis demo voor jouw situatie.</p>
+    </div>
+    <form class="cta-form rv" style="transition-delay:.1s" onsubmit="submit(event)">
+      <input type="email" class="cta-inp" id="cta-email" placeholder="jouw@bedrijf.nl" required>
+      <button type="submit" class="cta-sub">Gesprek plannen &rarr;</button>
+    </form>
+    <div class="cta-micro rv" style="transition-delay:.15s">
+      <span>Geen verplichtingen</span><span>Reactie binnen 24u</span><span>Eerste demo gratis</span>
+    </div>
+    <div class="cta-ok" id="cta-ok">&#10003; Bedankt! We nemen binnen 24 uur contact op.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">De AI Student</div>
+  <div class="foot-links"><a href="#demo">Demo</a><a href="#training">Training</a><a href="#automations">Automations</a><a href="#cta">Contact</a></div>
+  <div class="foot-kvk">aistudent.nl &middot; Amsterdam &middot; &copy; 2026</div>
+</footer>
+
+<a href="https://wa.me/31600000000?text=Hallo%2C%20ik%20wil%20meer%20weten%20over%20HELDER." class="wa" target="_blank">
+  <div class="wa-tip">App ons direct</div>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// Helpers
+function ga(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+
+// Nav
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('fixed',scrollY>20)},{passive:true});
+
+// Reveal
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// Demo: voorbeeld kiezen
+function kies(btn){
+  document.querySelectorAll('.demo-chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('demo-in').value=btn.textContent;
+}
+
+// Demo: API call
+// VERVANG HIERONDER: 'JOUW_API_KEY_HIER' met jouw echte sk-ant-... sleutel
+// API key wordt veilig opgeslagen in jouw eigen browser (localStorage)
+// Vul hem eenmalig in via het tandwieltje in de demo
+function getKey(){return localStorage.getItem('helder_demo_key')||'';}
+
+async function stuur(){
+  const inp=document.getElementById('demo-in');
+  const out=document.getElementById('demo-out');
+  const btn=document.getElementById('demo-btn');
+  const meta=document.getElementById('demo-meta');
+  const tijdEl=document.getElementById('demo-tijd');
+  const tokEl=document.getElementById('demo-tok');
+  const tekst=inp.value.trim();
+  if(!tekst)return;
+  btn.disabled=true;btn.textContent='Bezig...';
+  out.classList.remove('leeg');out.innerHTML='<span class="cursor"></span>';meta.style.display='none';
+  const t0=Date.now();
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:600,
+        system:'Je bent een professionele Nederlandse zakelijke assistent. Geef direct een kant-en-klaar bruikbaar resultaat zonder inleiding of "Zeker!". Bondig, professioneel, maximaal 200 woorden.',
+        messages:[{role:'user',content:tekst}]
+      })
+    });
+    const d=await r.json();
+    const ms=Date.now()-t0;
+    const txt=d.content?.[0]?.text||'Verwerking mislukt.';
+    const tok=d.usage?.output_tokens||'';
+    out.innerHTML='';let i=0;
+    const snl=Math.max(6,Math.round(11000/txt.length));
+    const iv=setInterval(()=>{
+      out.innerHTML=txt.slice(0,i)+'<span class="cursor"></span>';i++;
+      if(i>txt.length){
+        clearInterval(iv);out.innerHTML=txt;
+        meta.style.display='flex';
+        tijdEl.textContent=(ms/1000).toFixed(1)+' sec';
+        tokEl.textContent=tok?tok+' tokens':'';
+      }
+    },snl);
+  }catch(e){
+    out.innerHTML='Verbinding mislukt. Controleer de API-sleutel in de broncode.';
+    out.classList.add('leeg');
+  }
+  btn.disabled=false;btn.textContent='Genereer \u2192';
+}
+document.getElementById('demo-in').addEventListener('keydown',e=>{if(e.key==='Enter')stuur()});
+
+function setupKey(){
+  const k=prompt('Plak hier je Anthropic API-sleutel (sk-ant-...):','');
+  if(k&&k.startsWith('sk-ant-')){
+    localStorage.setItem('helder_demo_key',k);
+    document.getElementById('key-status').textContent='✓ Sleutel opgeslagen';
+    document.getElementById('key-status').style.color='var(--groen)';
+  } else if(k){
+    alert('Sleutel lijkt niet correct. Moet beginnen met sk-ant-');
+  }
+}
+
+// Check bij laden
+if(getKey()){
+  const s=document.getElementById('key-status');
+  if(s){s.textContent='✓ Sleutel actief';s.style.color='var(--groen)';}
+}
+
+// CTA
+function submit(e){
+  e.preventDefault();
+  const email=document.getElementById('cta-email').value;
+  document.querySelector('.cta-form').style.display='none';
+  document.getElementById('cta-ok').style.display='block';
+  console.log('Lead:',email);
+  // Productie: fetch('https://formspree.io/f/JOUWID',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})})
+}
+</script>
+</body>
+</html>
